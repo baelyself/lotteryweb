@@ -3,66 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>หวยจำลอง</title>
-    <link rel="stylesheet" href="style.css">
+    <title>หวยรางวัลใหญ่</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1 id="question">อยากได้อะไรถ้าถูกหวย?</h1>
-        <input type="text" id="lotteryInput" placeholder="กรอกตัวเลข 6 หลัก" maxlength="6">
-        <button id="checkButton" onclick="checkLucky()">ตรวจสอบผลรางวัล</button>
-        <p id="result" class="hidden"></p>
-        <button onclick="switchLanguage()">เปลี่ยนภาษา</button>
+        <h1 id="title">ถ้าคุณถูกหวยรางวัลใหญ่ จะเอาเงินไปทำอะไร?</h1>
+
+        <!-- เลือกภาษา -->
+        <select id="language" onchange="changeLanguage()">
+            <option value="th">ภาษาไทย</option>
+            <option value="en">English</option>
+        </select>
+
+        <!-- กรอกสิ่งที่อยากได้ -->
+        <input type="text" id="wishInput" placeholder="สิ่งที่อยากได้">
+
+        <!-- กรอกตัวเลข 6 หลัก -->
+        <input type="text" id="userNumber" maxlength="6" placeholder="กรอกเลข 6 หลัก">
+
+        <!-- ปุ่มตรวจสอบ -->
+        <button onclick="checkLottery()" id="checkButton">ตรวจสอบผลรางวัล</button>
+
+        <!-- ผลลัพธ์ -->
+        <p id="result"></p>
+
+        <!-- ปุ่มลองใหม่ (ซ่อนอยู่ตอนแรก) -->
+        <button id="retryButton" onclick="resetForm()" style="display:none;">ลองใหม่อีกครั้ง</button>
     </div>
 
     <script>
-        let currentLang = "th";
+        // ฟังก์ชันตรวจสอบผลรางวัล
+        function checkLottery() {
+            const wish = document.getElementById("wishInput").value;
+            const userNumber = document.getElementById("userNumber").value;
+            const resultText = document.getElementById("result");
+            const retryButton = document.getElementById("retryButton");
 
-        function switchLanguage() {
-            currentLang = currentLang === "th" ? "en" : "th";
-            updateText();
-        }
-
-        function updateText() {
-            const text = {
-                th: {
-                    question: "อยากได้อะไรถ้าถูกหวย?",
-                    enterNumber: "กรอกตัวเลข 6 หลัก",
-                    button: "ตรวจสอบผลรางวัล",
-                    resultLose: "น่าเสียดาย... เลขที่คุณกรอกไม่ตรงกับรางวัล ลองใหม่อีกครั้งไหม? โอกาสหน้าอาจเป็นของคุณ"
-                },
-                en: {
-                    question: "What do you want if you win the lottery?",
-                    enterNumber: "Enter your 6-digit number",
-                    button: "Check Results",
-                    resultLose: "Too bad... Your number didn't match. Want to try again? Maybe next time luck will be on your side!"
-                }
-            };
-
-            document.getElementById("question").innerText = text[currentLang].question;
-            document.getElementById("lotteryInput").placeholder = text[currentLang].enterNumber;
-            document.getElementById("checkButton").innerText = text[currentLang].button;
-        }
-
-        function checkLucky() {
-            const input = document.getElementById("lotteryInput").value;
-            const result = document.getElementById("result");
-
-            if (input.length !== 6 || isNaN(input)) {
-                result.innerText = currentLang === "th" ? "กรุณากรอกตัวเลข 6 หลัก" : "Please enter a valid 6-digit number";
-            } else {
-                const luckyNumber = "123456"; // เปลี่ยนเลขนี้ได้
-                if (input === luckyNumber) {
-                    result.innerText = currentLang === "th" ? "ยินดีด้วย! คุณถูกรางวัล" : "Congratulations! You won the lottery!";
-                } else {
-                    result.innerText = currentLang === "th" ? "น่าเสียดาย... เลขที่คุณกรอกไม่ตรงกับรางวัล ลองใหม่อีกครั้งไหม? โอกาสหน้าอาจเป็นของคุณ" : "Too bad... Your number didn't match. Want to try again? Maybe next time luck will be on your side!";
-                }
+            if (userNumber.length !== 6) {
+                resultText.textContent = language === "th" ? "กรุณากรอกเลข 6 หลัก" : "Please enter a 6-digit number";
+                return;
             }
 
-            result.classList.remove("hidden");
+            resultText.textContent = language === "th"
+                ? `น่าเสียดาย... เลขที่คุณกรอกไม่ตรงกับรางวัล ลองใหม่อีกครั้งไหม โอกาสหน้าอาจจะเป็นของคุณ`
+                : `Too bad... Your number didn't match. Try again next time!`;
+
+            retryButton.style.display = "block"; // แสดงปุ่มลองใหม่
         }
 
-        updateText();
+        // ฟังก์ชันเปลี่ยนภาษา
+        let language = "th";
+        function changeLanguage() {
+            language = document.getElementById("language").value;
+            document.getElementById("title").textContent = language === "th"
+                ? "ถ้าคุณถูกหวยรางวัลใหญ่ จะเอาเงินไปทำอะไร?"
+                : "If you win the big lottery, what will you do with the money?";
+            document.getElementById("wishInput").placeholder = language === "th"
+                ? "สิ่งที่อยากได้"
+                : "What do you want?";
+            document.getElementById("userNumber").placeholder = language === "th"
+                ? "กรอกเลข 6 หลัก"
+                : "Enter 6-digit number";
+            document.getElementById("checkButton").textContent = language === "th"
+                ? "ตรวจสอบผลรางวัล"
+                : "Check Result";
+            document.getElementById("retryButton").textContent = language === "th"
+                ? "ลองใหม่อีกครั้ง"
+                : "Try Again";
+        }
+
+        // ฟังก์ชันรีเซ็ตฟอร์ม
+        function resetForm() {
+            document.getElementById("wishInput").value = "";
+            document.getElementById("userNumber").value = "";
+            document.getElementById("result").textContent = "";
+            document.getElementById("retryButton").style.display = "none"; // ซ่อนปุ่มลองใหม่
+        }
     </script>
 
     <style>
