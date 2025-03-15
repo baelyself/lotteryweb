@@ -9,12 +9,105 @@
 <body>
     <div class="container">
         <h1 id="question">อยากได้อะไรถ้าถูกหวย?</h1>
-        <input type="text" id="lotteryInput" placeholder="กรอกตัวเลข 6 หลัก">
+        <input type="text" id="lotteryInput" placeholder="กรอกตัวเลข 6 หลัก" maxlength="6">
         <button id="checkButton" onclick="checkLucky()">ตรวจสอบผลรางวัล</button>
         <p id="result" class="hidden"></p>
         <button onclick="switchLanguage()">เปลี่ยนภาษา</button>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        let currentLang = "th";
+
+        function switchLanguage() {
+            currentLang = currentLang === "th" ? "en" : "th";
+            updateText();
+        }
+
+        function updateText() {
+            const text = {
+                th: {
+                    question: "อยากได้อะไรถ้าถูกหวย?",
+                    enterNumber: "กรอกตัวเลข 6 หลัก",
+                    button: "ตรวจสอบผลรางวัล",
+                    resultLose: "น่าเสียดาย... เลขที่คุณกรอกไม่ตรงกับรางวัล ลองใหม่อีกครั้งไหม? โอกาสหน้าอาจเป็นของคุณ"
+                },
+                en: {
+                    question: "What do you want if you win the lottery?",
+                    enterNumber: "Enter your 6-digit number",
+                    button: "Check Results",
+                    resultLose: "Too bad... Your number didn't match. Want to try again? Maybe next time luck will be on your side!"
+                }
+            };
+
+            document.getElementById("question").innerText = text[currentLang].question;
+            document.getElementById("lotteryInput").placeholder = text[currentLang].enterNumber;
+            document.getElementById("checkButton").innerText = text[currentLang].button;
+        }
+
+        function checkLucky() {
+            const input = document.getElementById("lotteryInput").value;
+            const result = document.getElementById("result");
+
+            if (input.length !== 6 || isNaN(input)) {
+                result.innerText = currentLang === "th" ? "กรุณากรอกตัวเลข 6 หลัก" : "Please enter a valid 6-digit number";
+            } else {
+                const luckyNumber = "123456"; // เปลี่ยนเลขนี้ได้
+                if (input === luckyNumber) {
+                    result.innerText = currentLang === "th" ? "ยินดีด้วย! คุณถูกรางวัล" : "Congratulations! You won the lottery!";
+                } else {
+                    result.innerText = currentLang === "th" ? "น่าเสียดาย... เลขที่คุณกรอกไม่ตรงกับรางวัล ลองใหม่อีกครั้งไหม? โอกาสหน้าอาจเป็นของคุณ" : "Too bad... Your number didn't match. Want to try again? Maybe next time luck will be on your side!";
+                }
+            }
+
+            result.classList.remove("hidden");
+        }
+
+        updateText();
+    </script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: auto;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 10px;
+            border: none;
+            background-color: black;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: gray;
+        }
+
+        input {
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 80%;
+            box-sizing: border-box;
+        }
+    </style>
 </body>
 </html>
